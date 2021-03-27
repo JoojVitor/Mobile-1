@@ -23,30 +23,23 @@ class MainActivity : AppCompatActivity() {
 
         btnAdicionarItem.setOnClickListener {
             val titulo = txtTituloItem.text.toString()
-            if(!titulo.isNullOrEmpty() and !itens.contains(titulo)){
-                itens.add(titulo)
+            if(titulo.isNullOrEmpty()){
+                txtTituloItem.error = "Insira um nome para o item."
+            }else if(itens.contains(titulo)){
+                txtTituloItem.error = "Este item já foi incluído."
             }else{
-                mostreErro()
-                txtTituloItem.hint = "Insira o nome do item!"
+                itens.add(titulo)
+                txtTituloItem.text.clear();
             }
             lvItens.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, itens)
         }
 
-        lvItens.setOnItemLongClickListener(OnItemLongClickListener { parent, view, pos, id ->
+        lvItens.onItemLongClickListener = OnItemLongClickListener { parent, view, pos, id ->
             val itemSelecionado = parent.getItemAtPosition(pos) as String
             itens.remove(itemSelecionado)
             lvItens.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, itens)
 
             true
-        })
-    }
-
-    fun mostreErro(){
-        val inconsistencia = AlertDialog.Builder(this)
-        inconsistencia.setTitle("Nome não informado")
-            .setMessage("Insira um nome para o novo item!")
-            .setIcon(R.drawable.app_icon)
-            .setPositiveButton("Ok") { dialog, which -> dialog.dismiss() }
-        inconsistencia.show()
+        }
     }
 }
